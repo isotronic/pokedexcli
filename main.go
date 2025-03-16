@@ -7,13 +7,20 @@ import (
 )
 
 func main() {
-	commands := map[string]cliCommand{
-		"exit": {
+	commands := make(map[string]cliCommand)
+	commands["help"] = cliCommand{
+		name: "help",
+		description: "Displays a help message",
+		callback: func() error {
+			return commandHelp(commands)
+		},
+	}
+	commands["exit"] = cliCommand{
 			name: "exit",
 			description: "Exit the Pokedex",
 			callback: commandExit,
-		},
 	}
+
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
