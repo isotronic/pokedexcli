@@ -8,17 +8,27 @@ import (
 
 func main() {
 	commands := make(map[string]cliCommand)
+	config := configType{}
 	commands["help"] = cliCommand{
 		name: "help",
 		description: "Displays a help message",
-		callback: func() error {
+		callback: func(config *configType) error {
 			return commandHelp(commands)
+		},
+	}
+	commands["map"] = cliCommand{
+		name: "map",
+		description: "List 20 Pokemon location areas",
+		callback: func(config *configType) error {
+			return commandMap(config)
 		},
 	}
 	commands["exit"] = cliCommand{
 			name: "exit",
 			description: "Exit the Pokedex",
-			callback: commandExit,
+			callback: func(config *configType) error {
+				return commandExit()
+			},
 	}
 
 
@@ -35,7 +45,7 @@ func main() {
 			continue
 		}
 		
-		err := command.callback()
+		err := command.callback(&config)
 		if err != nil {
 			fmt.Println("Error executing command:", err)
 		}
