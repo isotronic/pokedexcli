@@ -37,7 +37,7 @@ func TestCleanInput(t *testing.T) {
 }
 
 func TestCommandHelp(t *testing.T) {
-	commands := map[string]cliCommand{
+	commands := map[string]CLICommand{
 		"exit":   {name: "exit", description: "Exits the program"},
 		"help":   {name: "help", description: "Displays help"},
 	}
@@ -74,8 +74,8 @@ help: Displays help
 	}
 }
 func TestCommandMap(t *testing.T) {
-	config := &configType{
-		cache: *pokecache.NewCache(5 * time.Minute),
+	config := &ConfigType{
+		cache: pokecache.NewCache(5 * time.Minute),
 	}
 
 	// Capture stdout
@@ -109,9 +109,9 @@ func TestCommandMap(t *testing.T) {
 func TestCommandMapb(t *testing.T) {
 	// Test case 1: config.previousEndpoint = valid url
 	t.Run("Valid previousEndpoint", func(t *testing.T) {
-		config := &configType{
+		config := &ConfigType{
 			previousEndpoint: "https://pokeapi.co/api/v2/location-area/?offset=20&limit=20",
-			cache: *pokecache.NewCache(5 * time.Minute),
+			cache: pokecache.NewCache(5 * time.Minute),
 		}
 
 		// Capture stdout
@@ -145,9 +145,9 @@ func TestCommandMapb(t *testing.T) {
 
 	// Test case 2: config.previousEndpoint = empty string
 	t.Run("Empty previousEndpoint", func(t *testing.T) {
-		config := &configType{
+		config := &ConfigType{
 			previousEndpoint: "",
-			cache: *pokecache.NewCache(5 * time.Minute),
+			cache: pokecache.NewCache(5 * time.Minute),
 		}
 
 		// Capture stdout
