@@ -40,7 +40,7 @@ func main() {
 			},
 	}
 
-	config.cache = *pokecache.NewCache(10 * time.Second)
+	config.cache = pokecache.NewCache(10 * time.Second)
 
 
 	scanner := bufio.NewScanner(os.Stdin)

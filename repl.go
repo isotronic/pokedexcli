@@ -19,7 +19,7 @@ type cliCommand struct {
 type configType struct {
 	nextEndpoint string
 	previousEndpoint string
-	cache pokecache.Cache
+	cache *pokecache.Cache
 }
 
 type mapResult struct {
