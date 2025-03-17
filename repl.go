@@ -113,6 +113,9 @@ func commandMapb(config *ConfigType) error {
 		if err != nil {
 			return fmt.Errorf("error fetching data from API: %v", err)
 		}
+		if res.StatusCode != http.StatusOK {
+			return fmt.Errorf("unexpected status code: %d", res.StatusCode)
+		}
 		defer res.Body.Close()
 
 		body, err = io.ReadAll(res.Body)
