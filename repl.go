@@ -25,7 +25,7 @@ type ConfigType struct {
 type mapResult struct {
 	Count    int    `json:"count"`
 	Next     string `json:"next"`
-	Previous any    `json:"previous"`
+	Previous *string    `json:"previous"`
 	Results  []struct {
 		Name string `json:"name"`
 		URL  string `json:"url"`
@@ -85,8 +85,8 @@ func commandMap(config *ConfigType) error {
 	}
 
 	config.nextEndpoint = data.Next
-	if previous, ok := data.Previous.(string); ok {
-		config.previousEndpoint = previous
+	if data.Previous != nil {
+		config.previousEndpoint = *data.Previous
 	} else {
 		config.previousEndpoint = ""
 	}
@@ -133,8 +133,8 @@ func commandMapb(config *ConfigType) error {
 	}
 
 	config.nextEndpoint = data.Next
-	if previous, ok := data.Previous.(string); ok {
-		config.previousEndpoint = previous
+	if data.Previous != nil {
+		config.previousEndpoint = *data.Previous
 	} else {
 		config.previousEndpoint = ""
 	}
