@@ -48,7 +48,11 @@ func main() {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
 		input := scanner.Text()
-		cleaned := cleanInput(input)[0]
+		words := cleanInput(input)
+		if len(words) == 0 {
+			continue
+		}
+		cleaned := words[0]
 
 		command, ok := commands[cleaned]
 		if !ok {
