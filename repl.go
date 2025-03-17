@@ -38,6 +38,30 @@ func cleanInput(text string) []string {
 	return words
 }
 
+func fetchData(endpoint string, cache *pokecache.Cache) ([]byte, error) {
+	if data, exists := cache.Get(endpoint); exists {
+			return data, nil
+	}
+	res, err := http.Get(endpoint)
+	if err != nil {
+			return nil, fmt.Errorf("error fetching data from API: %v", err)
+	}
+	defer res.Body.Close()
+	
+	if res.StatusCode != http.StatusOK {
+			return nil, fmt.Errorf("unexpected status code: %d", res.StatusCode)
+	}
+	
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+			return nil, fmt.Errorf("error reading response body: %v", err)
+	}
+	
+	cache.Add(endpoint, body)
+	
+	return body, nil
+}
+
 func commandExit() error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
@@ -56,26 +80,14 @@ func commandHelp(commands map[string]CLICommand) error {
 }
 
 func commandMap(config *ConfigType) error {
-	var err error
 	endpoint := "https://pokeapi.co/api/v2/location-area/"
 	if config.nextEndpoint != "" {
 		endpoint = config.nextEndpoint
 	}
 
-	body, exists := config.cache.Get(endpoint)
-	if !exists {
-		res, err := http.Get(endpoint)
-		if err != nil {
-			return fmt.Errorf("error fetching data from API: %v", err)
-		}
-		defer res.Body.Close()
-
-		body, err = io.ReadAll(res.Body)
-		if err != nil {
-			return fmt.Errorf("error reading response body: %v", err)
-		}
-
-		config.cache.Add(endpoint, body)
+	body, err := fetchData(endpoint, config.cache)
+	if err != nil {
+		return err
 	}
 
 	var data mapResult
@@ -98,7 +110,6 @@ func commandMap(config *ConfigType) error {
 }
 
 func commandMapb(config *ConfigType) error {
-	var err error
 	endpoint := ""
 	if config.previousEndpoint != "" {
 		endpoint = config.previousEndpoint
@@ -107,23 +118,9 @@ func commandMapb(config *ConfigType) error {
 		return nil
 	}
 
-	body, exists := config.cache.Get(endpoint)
-	if !exists {
-		res, err := http.Get(endpoint)
-		if err != nil {
-			return fmt.Errorf("error fetching data from API: %v", err)
-		}
-		if res.StatusCode != http.StatusOK {
-			return fmt.Errorf("unexpected status code: %d", res.StatusCode)
-		}
-		defer res.Body.Close()
-
-		body, err = io.ReadAll(res.Body)
-		if err != nil {
-			return fmt.Errorf("error reading response body: %v", err)
-		}
-
-		config.cache.Add(endpoint, body)
+	body, err := fetchData(endpoint, config.cache)
+	if err != nil {
+		return err
 	}
 
 	var data mapResult
