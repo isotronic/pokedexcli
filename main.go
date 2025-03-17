@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	pokecache "pokedexcli/internal"
+	"time"
 )
 
 func main() {
@@ -37,6 +39,8 @@ func main() {
 				return commandExit()
 			},
 	}
+
+	config.cache = *pokecache.NewCache(10 * time.Second)
 
 
 	scanner := bufio.NewScanner(os.Stdin)

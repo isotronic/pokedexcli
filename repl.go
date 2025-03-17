@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	pokecache "pokedexcli/internal"
 	"strings"
 )
 
@@ -18,6 +19,7 @@ type cliCommand struct {
 type configType struct {
 	nextEndpoint string
 	previousEndpoint string
+	cache pokecache.Cache
 }
 
 type mapResult struct {
@@ -54,20 +56,26 @@ func commandHelp(commands map[string]cliCommand) error {
 }
 
 func commandMap(config *configType) error {
+	var err error
 	endpoint := "https://pokeapi.co/api/v2/location-area/"
 	if config.nextEndpoint != "" {
 		endpoint = config.nextEndpoint
 	}
 
-	res, err := http.Get(endpoint)
-	if err != nil {
-		return fmt.Errorf("error fetching data from API: %v", err)
-	}
-	defer res.Body.Close()
+	body, exists := config.cache.Get(endpoint)
+	if !exists {
+		res, err := http.Get(endpoint)
+		if err != nil {
+			return fmt.Errorf("error fetching data from API: %v", err)
+		}
+		defer res.Body.Close()
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return fmt.Errorf("error reading response body: %v", err)
+		body, err = io.ReadAll(res.Body)
+		if err != nil {
+			return fmt.Errorf("error reading response body: %v", err)
+		}
+
+		config.cache.Add(endpoint, body)
 	}
 
 	var data mapResult
@@ -90,6 +98,7 @@ func commandMap(config *configType) error {
 }
 
 func commandMapb(config *configType) error {
+	var err error
 	endpoint := ""
 	if config.previousEndpoint != "" {
 		endpoint = config.previousEndpoint
@@ -98,15 +107,20 @@ func commandMapb(config *configType) error {
 		return nil
 	}
 
-	res, err := http.Get(endpoint)
-	if err != nil {
-		return fmt.Errorf("error fetching data from API: %v", err)
-	}
-	defer res.Body.Close()
+	body, exists := config.cache.Get(endpoint)
+	if !exists {
+		res, err := http.Get(endpoint)
+		if err != nil {
+			return fmt.Errorf("error fetching data from API: %v", err)
+		}
+		defer res.Body.Close()
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return fmt.Errorf("error reading response body: %v", err)
+		body, err = io.ReadAll(res.Body)
+		if err != nil {
+			return fmt.Errorf("error reading response body: %v", err)
+		}
+
+		config.cache.Add(endpoint, body)
 	}
 
 	var data mapResult
