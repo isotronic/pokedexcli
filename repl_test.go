@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"os"
+	pokecache "pokedexcli/internal"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestCleanInput(t *testing.T) {
@@ -72,7 +74,9 @@ help: Displays help
 	}
 }
 func TestCommandMap(t *testing.T) {
-	config := &configType{}
+	config := &configType{
+		cache: *pokecache.NewCache(5 * time.Minute),
+	}
 
 	// Capture stdout
 	oldStdout := os.Stdout // Save old stdout
@@ -107,6 +111,7 @@ func TestCommandMapb(t *testing.T) {
 	t.Run("Valid previousEndpoint", func(t *testing.T) {
 		config := &configType{
 			previousEndpoint: "https://pokeapi.co/api/v2/location-area/?offset=20&limit=20",
+			cache: *pokecache.NewCache(5 * time.Minute),
 		}
 
 		// Capture stdout
@@ -142,6 +147,7 @@ func TestCommandMapb(t *testing.T) {
 	t.Run("Empty previousEndpoint", func(t *testing.T) {
 		config := &configType{
 			previousEndpoint: "",
+			cache: *pokecache.NewCache(5 * time.Minute),
 		}
 
 		// Capture stdout
