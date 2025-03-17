@@ -88,3 +88,43 @@ func commandMap(config *configType) error {
 	}
 	return nil
 }
+
+func commandMapb(config *configType) error {
+	endpoint := ""
+	if config.previousEndpoint != "" {
+		endpoint = config.previousEndpoint
+	} else {
+		fmt.Println("You're on the first page")
+		return nil
+	}
+
+	res, err := http.Get(endpoint)
+	if err != nil {
+		return fmt.Errorf("error fetching data from API: %v", err)
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return fmt.Errorf("error reading response body: %v", err)
+	}
+
+	var data mapResult
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return fmt.Errorf("error unmarshalling JSON: %v", err)
+	}
+
+	config.nextEndpoint = data.Next
+	if previous, ok := data.Previous.(string); ok {
+		config.previousEndpoint = previous
+	} else {
+		config.previousEndpoint = ""
+	}
+
+	for _, area := range data.Results {
+		fmt.Println(area.Name)
+	}
+
+	return nil
+}

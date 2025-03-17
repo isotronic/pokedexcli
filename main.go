@@ -23,6 +23,13 @@ func main() {
 			return commandMap(config)
 		},
 	}
+	commands["mapb"] = cliCommand{
+		name: "mapb",
+		description: "List the previous 20 Pokemon location areas",
+		callback: func(config *configType) error {
+			return commandMapb(config)
+		},
+	}
 	commands["exit"] = cliCommand{
 			name: "exit",
 			description: "Exit the Pokedex",
