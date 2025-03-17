@@ -9,33 +9,33 @@ import (
 )
 
 func main() {
-	commands := make(map[string]cliCommand)
-	config := configType{}
-	commands["help"] = cliCommand{
+	commands := make(map[string]CLICommand)
+	config := ConfigType{}
+	commands["help"] = CLICommand{
 		name: "help",
 		description: "Displays a help message",
-		callback: func(config *configType) error {
+		callback: func(config *ConfigType) error {
 			return commandHelp(commands)
 		},
 	}
-	commands["map"] = cliCommand{
+	commands["map"] = CLICommand{
 		name: "map",
 		description: "List 20 Pokemon location areas",
-		callback: func(config *configType) error {
+		callback: func(config *ConfigType) error {
 			return commandMap(config)
 		},
 	}
-	commands["mapb"] = cliCommand{
+	commands["mapb"] = CLICommand{
 		name: "mapb",
 		description: "List the previous 20 Pokemon location areas",
-		callback: func(config *configType) error {
+		callback: func(config *ConfigType) error {
 			return commandMapb(config)
 		},
 	}
-	commands["exit"] = cliCommand{
+	commands["exit"] = CLICommand{
 			name: "exit",
 			description: "Exit the Pokedex",
-			callback: func(config *configType) error {
+			callback: func(config *ConfigType) error {
 				return commandExit()
 			},
 	}

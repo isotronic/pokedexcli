@@ -10,13 +10,13 @@ import (
 	"strings"
 )
 
-type cliCommand struct {
+type CLICommand struct {
 	name string
 	description string
-	callback func(config *configType) error
+	callback func(config *ConfigType) error
 }
 
-type configType struct {
+type ConfigType struct {
 	nextEndpoint string
 	previousEndpoint string
 	cache *pokecache.Cache
@@ -44,7 +44,7 @@ func commandExit() error {
 	return nil
 }
 
-func commandHelp(commands map[string]cliCommand) error {
+func commandHelp(commands map[string]CLICommand) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println("")
@@ -55,7 +55,7 @@ func commandHelp(commands map[string]cliCommand) error {
 	return nil
 }
 
-func commandMap(config *configType) error {
+func commandMap(config *ConfigType) error {
 	var err error
 	endpoint := "https://pokeapi.co/api/v2/location-area/"
 	if config.nextEndpoint != "" {
@@ -97,7 +97,7 @@ func commandMap(config *configType) error {
 	return nil
 }
 
-func commandMapb(config *configType) error {
+func commandMapb(config *ConfigType) error {
 	var err error
 	endpoint := ""
 	if config.previousEndpoint != "" {
