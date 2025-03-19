@@ -142,10 +142,10 @@ func commandExplore(config *ConfigType) error {
 		return fmt.Errorf("error unmarshalling JSON: %v", err)
 	}
 
-	fmt.Println("Exploring " + config.arg + "...")
+	fmt.Printf("Exploring %v...\n", config.arg)
 	fmt.Println("Found Pokemon:")
 	for _, encounters := range data.PokemonEncounters {
-		fmt.Println(" - " + encounters.Pokemon.Name)
+		fmt.Printf(" - %v\n", encounters.Pokemon.Name)
 	}
 
 	return nil
@@ -170,14 +170,14 @@ func commandCatch(config *ConfigType) error {
 		return fmt.Errorf("error unmarshalling JSON: %v", err)
 	}
 
-	fmt.Println("Throwing a Pokeball at " + result.Name + "...")
+		fmt.Printf("Throwing a Pokeball at %v...\n", result.Name)
 
 	catchProbability := 5 / math.Pow(math.Log(float64(result.BaseExperience)), 1.4)
 	if rand.Float64() <= catchProbability {
-		fmt.Println(result.Name + " was caught!")
+		fmt.Printf("%v was caught!\n", result.Name)
 		config.pokedex[result.Name] = result
 	} else {
-		fmt.Println(result.Name + " escaped!")
+		fmt.Printf("%v escaped!\n", result.Name)
 	}
 
 	return nil
