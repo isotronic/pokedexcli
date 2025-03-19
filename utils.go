@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	pokecache "pokedexcli/internal/pokecache"
 	"strings"
@@ -36,4 +37,8 @@ func fetchData(endpoint string, cache *pokecache.Cache) ([]byte, error) {
 	cache.Add(endpoint, body)
 	
 	return body, nil
+}
+
+func getProbability(n int) float64 {
+	return 5 / math.Pow(math.Log(float64(n)), 1.4)
 }

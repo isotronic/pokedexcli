@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"math/rand/v2"
 	"os"
 )
@@ -138,8 +137,7 @@ func commandCatch(config *ConfigType) error {
 
 		fmt.Printf("Throwing a Pokeball at %v...\n", result.Name)
 
-	catchProbability := 5 / math.Pow(math.Log(float64(result.BaseExperience)), 1.4)
-	if rand.Float64() <= catchProbability {
+	if rand.Float64() <= getProbability(result.BaseExperience) {
 		fmt.Printf("%v was caught!\n", result.Name)
 		fmt.Println("You can now inspect it withe the inspect command.")
 		config.pokedex[result.Name] = result
