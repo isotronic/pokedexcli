@@ -182,3 +182,28 @@ func commandCatch(config *ConfigType) error {
 
 	return nil
 }
+
+func commandInspect(config *ConfigType) error {
+	if len(config.arg) == 0 {
+		return fmt.Errorf("you need to add a pokemon name")
+	}
+
+	pokemon, exists := config.pokedex[config.arg]
+	if !exists {
+		return fmt.Errorf("you have not caught %v yet", config.arg)
+	}
+
+	fmt.Printf("Name: %v\n", pokemon.Name)
+	fmt.Printf("Height: %v\n", pokemon.Height)
+	fmt.Printf("Weight: %v\n", pokemon.Weight)
+	fmt.Println("Stats:")
+	for _, stat := range pokemon.Stats {
+		fmt.Printf(" - %v: %v\n", stat.Stat.Name, stat.BaseStat)
+	}
+	fmt.Println("Types:")
+	for _, pokemonType := range pokemon.Types {
+		fmt.Printf(" - %v\n", pokemonType.Type.Name)
+	}
+
+	return nil
+}

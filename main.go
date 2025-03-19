@@ -48,6 +48,13 @@ func main() {
 			return commandCatch(config)
 		},
 	}
+	commands["inspect"] = CLICommand{
+		name: "inspect",
+		description: "Show details for a Pokemon you already caught",
+		callback: func(config *ConfigType) error {
+			return commandInspect(config)
+		},
+	}
 	commands["exit"] = CLICommand{
 			name: "exit",
 			description: "Exit the Pokedex",
