@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
+	"math/rand/v2"
 	"net/http"
 	"os"
 	pokecache "pokedexcli/internal/pokecache"
@@ -144,6 +146,38 @@ func commandExplore(config *ConfigType) error {
 	fmt.Println("Found Pokemon:")
 	for _, encounters := range data.PokemonEncounters {
 		fmt.Println(" - " + encounters.Pokemon.Name)
+	}
+
+	return nil
+}
+
+func commandCatch(config *ConfigType) error {
+	endpoint := "https://pokeapi.co/api/v2/pokemon/"
+
+	if len(config.arg) == 0 {
+		return fmt.Errorf("you need to add a pokemon name")
+	}
+
+	endpoint += config.arg
+	body, err := fetchData(endpoint, config.cache)
+	if err != nil {
+		return err
+	}
+
+	var result PokemonResult
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return fmt.Errorf("error unmarshalling JSON: %v", err)
+	}
+
+	fmt.Println("Throwing a Pokeball at " + result.Name + "...")
+
+	catchProbability := 5 / math.Pow(math.Log(float64(result.BaseExperience)), 1.4)
+	if rand.Float64() <= catchProbability {
+		fmt.Println(result.Name + " was caught!")
+		config.pokedex[result.Name] = result
+	} else {
+		fmt.Println(result.Name + " escaped!")
 	}
 
 	return nil

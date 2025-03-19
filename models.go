@@ -13,6 +13,7 @@ type ConfigType struct {
 	previousEndpoint string
 	cache *pokecache.Cache
 	arg string
+	pokedex map[string]PokemonResult
 }
 
 type MapResult struct {

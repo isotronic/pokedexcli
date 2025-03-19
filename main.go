@@ -10,7 +10,9 @@ import (
 
 func main() {
 	commands := make(map[string]CLICommand)
-	config := ConfigType{}
+	config := ConfigType{
+		pokedex: make(map[string]PokemonResult),
+	}
 	commands["help"] = CLICommand{
 		name: "help",
 		description: "Displays a help message",
@@ -37,6 +39,13 @@ func main() {
 		description: "Show all the Pokemon that can be encountered in a given location area",
 		callback: func(config *ConfigType) error {
 			return commandExplore(config)
+		},
+	}
+	commands["catch"] = CLICommand{
+		name: "catch",
+		description: "Try to catch a Pokemon and add it to your Pokedex",
+		callback: func(config *ConfigType) error {
+			return commandCatch(config)
 		},
 	}
 	commands["exit"] = CLICommand{
