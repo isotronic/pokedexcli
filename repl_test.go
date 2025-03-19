@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"os"
-	pokecache "pokedexcli/internal"
+	pokecache "pokedexcli/internal/pokecache"
 	"strings"
 	"testing"
 	"time"

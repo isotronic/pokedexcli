@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	pokecache "pokedexcli/internal"
+	pokecache "pokedexcli/internal/pokecache"
 	"time"
 )
 

@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
-	pokecache "pokedexcli/internal"
+	pokecache "pokedexcli/internal/pokecache"
 	"strings"
 )
 
