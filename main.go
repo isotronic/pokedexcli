@@ -32,6 +32,13 @@ func main() {
 			return commandMapb(config)
 		},
 	}
+	commands["explore"] = CLICommand{
+		name: "explore",
+		description: "Show all the Pokemon that can be encountered in a given location area",
+		callback: func(config *ConfigType) error {
+			return commandExplore(config)
+		},
+	}
 	commands["exit"] = CLICommand{
 			name: "exit",
 			description: "Exit the Pokedex",
@@ -58,6 +65,10 @@ func main() {
 		if !ok {
 			fmt.Println("Unknown command")
 			continue
+		}
+
+		if len(words) > 1 {
+			config.arg = words[1]
 		}
 		
 		err := command.callback(&config)

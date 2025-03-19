@@ -20,6 +20,7 @@ type ConfigType struct {
 	nextEndpoint string
 	previousEndpoint string
 	cache *pokecache.Cache
+	arg string
 }
 
 type mapResult struct {
@@ -30,6 +31,59 @@ type mapResult struct {
 		Name string `json:"name"`
 		URL  string `json:"url"`
 	} `json:"results"`
+}
+
+type exploreResult struct {
+	EncounterMethodRates []struct {
+		EncounterMethod struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"encounter_method"`
+		VersionDetails []struct {
+			Rate    int `json:"rate"`
+			Version struct {
+				Name string `json:"name"`
+				URL  string `json:"url"`
+			} `json:"version"`
+		} `json:"version_details"`
+	} `json:"encounter_method_rates"`
+	GameIndex int `json:"game_index"`
+	ID        int `json:"id"`
+	Location  struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"location"`
+	Name  string `json:"name"`
+	Names []struct {
+		Language struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"language"`
+		Name string `json:"name"`
+	} `json:"names"`
+	PokemonEncounters []struct {
+		Pokemon struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"pokemon"`
+		VersionDetails []struct {
+			EncounterDetails []struct {
+				Chance          int   `json:"chance"`
+				ConditionValues []any `json:"condition_values"`
+				MaxLevel        int   `json:"max_level"`
+				Method          struct {
+					Name string `json:"name"`
+					URL  string `json:"url"`
+				} `json:"method"`
+				MinLevel int `json:"min_level"`
+			} `json:"encounter_details"`
+			MaxChance int `json:"max_chance"`
+			Version   struct {
+				Name string `json:"name"`
+				URL  string `json:"url"`
+			} `json:"version"`
+		} `json:"version_details"`
+	} `json:"pokemon_encounters"`
 }
 
 func cleanInput(text string) []string {
@@ -138,6 +192,34 @@ func commandMapb(config *ConfigType) error {
 
 	for _, area := range data.Results {
 		fmt.Println(area.Name)
+	}
+
+	return nil
+}
+
+func commandExplore(config *ConfigType) error {
+	endpoint := "https://pokeapi.co/api/v2/location-area/"
+
+	if len(config.arg) == 0 {
+		return fmt.Errorf("you need to add a location name")
+	}
+
+	endpoint += config.arg
+	body, err := fetchData(endpoint, config.cache)
+	if err != nil {
+		return err
+	}
+
+	var data exploreResult
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return fmt.Errorf("error unmarshalling JSON: %v", err)
+	}
+
+	fmt.Println("Exploring " + config.arg + "...")
+	fmt.Println("Found Pokemon:")
+	for _, encounters := range data.PokemonEncounters {
+		fmt.Println(" - " + encounters.Pokemon.Name)
 	}
 
 	return nil
