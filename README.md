@@ -1,6 +1,6 @@
 # Pokedex CLI
 
-Pokedex CLI is a command-line interface application that allows users to explore, catch, and inspect Pokémon using data from the PokéAPI.
+Pokedex CLI is my implementation of a command-line interface application that allows users to explore, catch, and inspect Pokémon using data from the PokéAPI.
 
 ## Features
 
