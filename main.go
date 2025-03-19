@@ -89,7 +89,7 @@ func main() {
 		
 		err := command.callback(&config)
 		if err != nil {
-			fmt.Println("Error executing command:", err)
+			fmt.Println(err)
 		}
 	}
 }
