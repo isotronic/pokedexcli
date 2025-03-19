@@ -176,3 +176,59 @@ func TestCommandMapb(t *testing.T) {
 		}
 	})
 }
+func TestCommandExplore(t *testing.T) {
+	// Test case 1: Valid location name
+	t.Run("Valid location name", func(t *testing.T) {
+		config := &ConfigType{
+			arg:   "mt-coronet-4f",
+			cache: pokecache.NewCache(5 * time.Minute),
+		}
+
+		// Capture stdout
+		oldStdout := os.Stdout // Save old stdout
+		r, w, _ := os.Pipe()
+		os.Stdout = w
+
+		// Call function
+		err := commandExplore(config)
+		if err != nil {
+			t.Fatalf("commandExplore returned an error: %v", err)
+		}
+
+		// Close writer and restore stdout
+		w.Close()
+		os.Stdout = oldStdout
+
+		// Read output
+		var buf bytes.Buffer
+		_, _ = buf.ReadFrom(r)
+		output := buf.String()
+
+		if !strings.Contains(output, "Exploring mt-coronet-4f...") {
+			t.Errorf("commandExplore() output does not contain expected location name.\nGot:\n%s", output)
+		}
+
+		if !strings.Contains(output, "golbat") {
+			t.Errorf("commandExplore() output does not contain expected Pokemon name.\nGot:\n%s", output)
+		}
+	})
+
+	// Test case 2: Empty location name
+	t.Run("Empty location name", func(t *testing.T) {
+		config := &ConfigType{
+			arg:   "",
+			cache: pokecache.NewCache(5 * time.Minute),
+		}
+
+		err := commandExplore(config)
+		if err == nil {
+			t.Fatalf("commandExplore did not return an error for empty location name")
+		}
+
+		expectedError := "you need to add a location name"
+		if err.Error() != expectedError {
+			t.Errorf("commandExplore() error mismatch.\nGot:\n%s\nExpected:\n%s", err.Error(), expectedError)
+		}
+	})
+}
+
