@@ -141,6 +141,7 @@ func commandCatch(config *ConfigType) error {
 	catchProbability := 5 / math.Pow(math.Log(float64(result.BaseExperience)), 1.4)
 	if rand.Float64() <= catchProbability {
 		fmt.Printf("%v was caught!\n", result.Name)
+		fmt.Println("You can now inspect it withe the inspect command.")
 		config.pokedex[result.Name] = result
 	} else {
 		fmt.Printf("%v escaped!\n", result.Name)
